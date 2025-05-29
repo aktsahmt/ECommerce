@@ -1,7 +1,11 @@
 using ECommerce.API.Middleware;
+using ECommerce.Application.Interfaces;
 using ECommerce.Application.Mappings;
 using ECommerce.Domain.Interfaces;
+using ECommerce.Infrastructure.Configurations;
 using ECommerce.Infrastructure.Persistences;
+using ECommerce.Infrastructure.Policies;
+using ECommerce.Infrastructure.Services;
 using ECommerce.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +25,9 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+
+builder.Services.Configure<BalanceServiceSettings>(builder.Configuration.GetSection("BalanceService"));
+builder.Services.AddHttpClient<IClientBalanceService, ClientBalanceService>().AddPolicyHandler(RetryPolicies.GetRetryPolicy());
 
 builder.Services.AddDbContext<OrderDbContext>(options => options.UseInMemoryDatabase("OrderDb"));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
