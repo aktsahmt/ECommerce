@@ -1,5 +1,9 @@
 using ECommerce.API.Middleware;
 using ECommerce.Application.Mappings;
+using ECommerce.Domain.Interfaces;
+using ECommerce.Infrastructure.Persistences;
+using ECommerce.Infrastructure.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +21,9 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+
+builder.Services.AddDbContext<OrderDbContext>(options => options.UseInMemoryDatabase("OrderDb"));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 var app = builder.Build();
