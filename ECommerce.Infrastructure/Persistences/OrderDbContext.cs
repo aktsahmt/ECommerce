@@ -29,6 +29,16 @@ public class OrderDbContext : DbContext
                   .WithMany(h => h.OrderLines)
                   .HasForeignKey(x => x.OrderHeaderId);
         });
+
+        modelBuilder.Entity<Balance>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.AvailableBalance).HasColumnType("decimal(18,2)");
+            entity.Property(x => x.BlockedBalance).HasColumnType("decimal(18,2)");
+            entity.Property(x => x.TotalBalance).HasColumnType("decimal(18,2)");
+            entity.Property(x => x.Currency).IsRequired().HasMaxLength(3);
+            entity.Property(x => x.LastUpdated).HasDefaultValueSql("GETUTCDATE()");
+        });
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
